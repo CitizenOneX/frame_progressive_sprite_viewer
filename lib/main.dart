@@ -61,7 +61,8 @@ class MainAppState extends State<MainApp> with SimpleFrameAppState {
         TxImageSpriteBlock isb = TxImageSpriteBlock(
           msgCode: 0x20,
           image: TxSprite.fromPngBytes(msgCode: 0x20, pngBytes: pngBytes),
-          spriteLineHeight: 10);
+          spriteLineHeight: 20,
+          progressiveRender: true);
 
         // and send the block header then the sprite lines to Frame
         await frame!.sendMessage(isb);

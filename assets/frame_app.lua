@@ -2,7 +2,7 @@ local data = require('data.min')
 local battery = require('battery.min')
 local code = require('code.min')
 local sprite = require('sprite.min')
-local image_sprite_block = require('image_sprite_block')
+local image_sprite_block = require('image_sprite_block.min')
 
 -- Phone to Frame flags
 IMAGE_SPRITE_BLOCK = 0x20
@@ -30,18 +30,22 @@ function app_loop()
 				-- show the image sprite block
 				local isb = data.app_data[IMAGE_SPRITE_BLOCK]
 
-				-- it can be that we haven't got any sprites yet
+				-- it can be that we haven't got any sprites yet, so only proceed if we have a sprite
 				if isb.current_sprite_index > 0 then
-					for index = 1, isb.active_sprites do
-						local spr = isb.sprites[index]
-						local y_offset = isb.sprite_line_height * (index - 1)
+					-- either we have all the sprites, or we want to do progressive/incremental rendering
+					if isb.progressive_render or isb.active_sprites == isb.total_sprites then
 
-						frame.display.bitmap(1, y_offset + 1, spr.width, 2^spr.bpp, 0, spr.pixel_data)
+						for index = 1, isb.active_sprites do
+							local spr = isb.sprites[index]
+							local y_offset = isb.sprite_line_height * (index - 1)
+
+							frame.display.bitmap(1, y_offset + 1, spr.width, 2^spr.bpp, 0, spr.pixel_data)
+						end
+
+						frame.display.show()
+
 					end
-
-					frame.display.show()
 				end
-
 			end
 
 			if (data.app_data[CLEAR_MSG] ~= nil) then
