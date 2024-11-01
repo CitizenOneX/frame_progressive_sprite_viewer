@@ -2,13 +2,14 @@ local data = require('data.min')
 local battery = require('battery.min')
 local code = require('code.min')
 local sprite = require('sprite.min')
+local image_sprite_block = require('image_sprite_block')
 
 -- Phone to Frame flags
-USER_SPRITE = 0x20
+IMAGE_SPRITE_BLOCK = 0x20
 CLEAR_MSG = 0x10
 
 -- register the message parsers so they are automatically called when matching data comes in
-data.parsers[USER_SPRITE] = sprite.parse_sprite
+data.parsers[IMAGE_SPRITE_BLOCK] = image_sprite_block.parse_image_sprite_block
 data.parsers[CLEAR_MSG] = code.parse_code
 
 -- Main app loop
@@ -25,13 +26,22 @@ function app_loop()
 		-- one or more full messages received
 		if items_ready > 0 then
 
-			if (data.app_data[USER_SPRITE] ~= nil) then
-				-- show the sprite
-				local spr = data.app_data[USER_SPRITE]
-				frame.display.bitmap(1, 1, spr.width, 2^spr.bpp, 0, spr.pixel_data)
-				frame.display.show()
+			if (data.app_data[IMAGE_SPRITE_BLOCK] ~= nil) then
+				-- show the image sprite block
+				local isb = data.app_data[IMAGE_SPRITE_BLOCK]
 
-				data.app_data[USER_SPRITE] = nil
+				-- it can be that we haven't got any sprites yet
+				if isb.current_sprite_index > 0 then
+					for index = 1, isb.active_sprites do
+						local spr = isb.sprites[index]
+						local y_offset = isb.sprite_line_height * (index - 1)
+
+						frame.display.bitmap(1, y_offset + 1, spr.width, 2^spr.bpp, 0, spr.pixel_data)
+					end
+
+					frame.display.show()
+				end
+
 			end
 
 			if (data.app_data[CLEAR_MSG] ~= nil) then

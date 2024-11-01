@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 
 import 'package:simple_frame_app/simple_frame_app.dart';
 import 'package:simple_frame_app/tx/code.dart';
+import 'package:simple_frame_app/tx/image_sprite_block.dart';
 import 'package:simple_frame_app/tx/sprite.dart';
 
 
@@ -27,7 +28,7 @@ class MainAppState extends State<MainApp> with SimpleFrameAppState {
   Image? _image;
 
   MainAppState() {
-    Logger.root.level = Level.INFO;
+    Logger.root.level = Level.FINE;
     Logger.root.onRecord.listen((record) {
       debugPrint('${record.level.name}: [${record.loggerName}] ${record.time}: ${record.message}');
     });
@@ -56,8 +57,19 @@ class MainAppState extends State<MainApp> with SimpleFrameAppState {
           _image = Image.memory(pngBytes);
         });
 
-        // and send initial text to Frame
-        await frame!.sendMessage(TxSprite.fromPngBytes(msgCode: 0x20, pngBytes: pngBytes));
+        // create the image sprite block header and its sprite lines
+        TxImageSpriteBlock isb = TxImageSpriteBlock(
+          msgCode: 0x20,
+          image: TxSprite.fromPngBytes(msgCode: 0x20, pngBytes: pngBytes),
+          spriteLineHeight: 10);
+
+        // and send the block header then the sprite lines to Frame
+        await frame!.sendMessage(isb);
+
+        for (var sprite in isb.spriteLines) {
+          await frame!.sendMessage(sprite);
+        }
+
       }
       else {
         currentState = ApplicationState.ready;
