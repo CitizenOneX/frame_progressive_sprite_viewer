@@ -1,6 +1,8 @@
-# Frame Sprite Viewer
+# Frame Progressive Sprite Viewer
 
 Basic image and sprite viewer for Brilliant Labs Frame.
+
+Demonstrates `TxImageSpriteBlock` that splits the image into slices and sends smaller sprite lines, optionally allowing for progressive/incremental rendering and potentially a smaller peak memory requirement during packet assembly.
 
 ## Frameshots
 1-bit sprite

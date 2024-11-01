@@ -1,5 +1,5 @@
-name: frame_sprite_viewer
-description: "Basic image and sprite viewer for Brilliant Labs Frame"
+name: frame_progressive_sprite_viewer
+description: "Basic image and sprite viewer for Brilliant Labs Frame allowing for progressive rendering"
 publish_to: 'none'
 version: 0.1.0
 
