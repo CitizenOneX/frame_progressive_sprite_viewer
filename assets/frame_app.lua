@@ -33,7 +33,7 @@ function app_loop()
 				-- it can be that we haven't got any sprites yet, so only proceed if we have a sprite
 				if isb.current_sprite_index > 0 then
 					-- either we have all the sprites, or we want to do progressive/incremental rendering
-					if isb.progressive_render or isb.active_sprites == isb.total_sprites then
+					if isb.progressive_render or (isb.active_sprites == isb.total_sprites) then
 
 						for index = 1, isb.active_sprites do
 							local spr = isb.sprites[index]
