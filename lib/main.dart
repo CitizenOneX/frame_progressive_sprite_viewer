@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:image/image.dart' as img;
 import 'package:logging/logging.dart';
 
 import 'package:simple_frame_app/simple_frame_app.dart';
@@ -28,7 +29,7 @@ class MainAppState extends State<MainApp> with SimpleFrameAppState {
   Image? _image;
 
   MainAppState() {
-    Logger.root.level = Level.FINE;
+    Logger.root.level = Level.INFO;
     Logger.root.onRecord.listen((record) {
       debugPrint('${record.level.name}: [${record.loggerName}] ${record.time}: ${record.message}');
     });
@@ -43,24 +44,36 @@ class MainAppState extends State<MainApp> with SimpleFrameAppState {
       // Open the file picker
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['png'],
+        allowedExtensions: ['png', 'jpg'],
       );
 
       if (result != null) {
         File file = File(result.files.single.path!);
 
         // Read the file content
-        Uint8List pngBytes = await file.readAsBytes();
+        Uint8List imageBytes = await file.readAsBytes();
 
-        // Update the UI
+        // Update the UI based on the original image
         setState(() {
-          _image = Image.memory(pngBytes);
+          _image = Image.memory(imageBytes);
+        });
+
+        // yield here a moment in order to show the first image first
+        await Future.delayed(const Duration(milliseconds: 10));
+
+        // create the sprite, quantize and dither and scale if required
+        var sprite = TxSprite.fromImageBytes(msgCode: 0x20, imageBytes: imageBytes);
+
+        // Update the UI with the modified image
+        setState(() {
+          _image = Image.memory(img.encodePng(sprite.toImage()));
         });
 
         // create the image sprite block header and its sprite lines
+        // based on the sprite
         TxImageSpriteBlock isb = TxImageSpriteBlock(
           msgCode: 0x20,
-          image: TxSprite.fromPngBytes(msgCode: 0x20, pngBytes: pngBytes),
+          image: sprite,
           spriteLineHeight: 20,
           progressiveRender: true);
 

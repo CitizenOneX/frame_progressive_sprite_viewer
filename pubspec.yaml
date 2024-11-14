@@ -10,8 +10,9 @@ dependencies:
   file_picker: ^8.1.2
   flutter:
     sdk: flutter
+  image: ^4.3.0
   logging: ^1.2.0
-  simple_frame_app: ^1.4.1
+  simple_frame_app: ^1.6.0
 
 dev_dependencies:
   flutter_test:
@@ -24,6 +25,5 @@ flutter:
     - packages/simple_frame_app/lua/battery.min.lua
     - packages/simple_frame_app/lua/code.min.lua
     - packages/simple_frame_app/lua/data.min.lua
-    - packages/simple_frame_app/lua/sprite.min.lua
     - packages/simple_frame_app/lua/image_sprite_block.min.lua
-    - assets/frame_app.lua
+    - assets/frame_app.min.lua

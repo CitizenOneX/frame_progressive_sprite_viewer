@@ -1,7 +1,6 @@
 local data = require('data.min')
 local battery = require('battery.min')
 local code = require('code.min')
-local sprite = require('sprite.min')
 local image_sprite_block = require('image_sprite_block.min')
 
 -- Phone to Frame flags
@@ -39,11 +38,15 @@ function app_loop()
 							local spr = isb.sprites[index]
 							local y_offset = isb.sprite_line_height * (index - 1)
 
+							-- set the palette the first time, all the sprites should have the same palette
+							if index == 1 then
+								image_sprite_block.set_palette(spr.num_colors, spr.palette_data)
+							end
+
 							frame.display.bitmap(1, y_offset + 1, spr.width, 2^spr.bpp, 0, spr.pixel_data)
 						end
 
 						frame.display.show()
-
 					end
 				end
 			end
