@@ -62,7 +62,7 @@ function app_loop()
 
         -- periodic battery level updates, 120s for a camera app
         last_batt_update = battery.send_batt_if_elapsed(last_batt_update, 120)
-		frame.sleep(0.1)
+		frame.sleep(0.005)
 	end
 end
 
