@@ -10,9 +10,10 @@ dependencies:
   file_picker: ^8.1.2
   flutter:
     sdk: flutter
+  frame_msg: ^2.0.0
   image: ^4.3.0
   logging: ^1.2.0
-  simple_frame_app: ^3.1.0
+  simple_frame_app: ^7.0.0
 
 dev_dependencies:
   flutter_test:
@@ -22,8 +23,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - packages/simple_frame_app/lua/battery.min.lua
-    - packages/simple_frame_app/lua/code.min.lua
-    - packages/simple_frame_app/lua/data.min.lua
-    - packages/simple_frame_app/lua/image_sprite_block.min.lua
+    - packages/frame_msg/lua/battery.min.lua
+    - packages/frame_msg/lua/code.min.lua
+    - packages/frame_msg/lua/data.min.lua
+    - packages/frame_msg/lua/image_sprite_block.min.lua
     - assets/frame_app.min.lua

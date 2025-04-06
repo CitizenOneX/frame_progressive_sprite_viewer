@@ -6,9 +6,9 @@ import 'package:image/image.dart' as img;
 import 'package:logging/logging.dart';
 
 import 'package:simple_frame_app/simple_frame_app.dart';
-import 'package:simple_frame_app/tx/code.dart';
-import 'package:simple_frame_app/tx/image_sprite_block.dart';
-import 'package:simple_frame_app/tx/sprite.dart';
+import 'package:frame_msg/tx/code.dart';
+import 'package:frame_msg/tx/image_sprite_block.dart';
+import 'package:frame_msg/tx/sprite.dart';
 
 
 void main() => runApp(const MainApp());
@@ -68,7 +68,7 @@ class MainAppState extends State<MainApp> with SimpleFrameAppState {
         await Future.delayed(const Duration(milliseconds: 10));
 
         // create the sprite, quantize and dither and scale if required
-        var sprite = TxSprite.fromImageBytes(msgCode: 0x20, imageBytes: imageBytes);
+        var sprite = TxSprite.fromImageBytes(imageBytes: imageBytes);
 
         // Update the UI with the modified image
         setState(() {
@@ -78,16 +78,15 @@ class MainAppState extends State<MainApp> with SimpleFrameAppState {
         // create the image sprite block header and its sprite lines
         // based on the sprite
         TxImageSpriteBlock isb = TxImageSpriteBlock(
-          msgCode: 0x20,
           image: sprite,
           spriteLineHeight: 20,
           progressiveRender: true);
 
         // and send the block header then the sprite lines to Frame
-        await frame!.sendMessage(isb);
+        await frame!.sendMessage(0x20, isb.pack());
 
         for (var sprite in isb.spriteLines) {
-          await frame!.sendMessage(sprite);
+          await frame!.sendMessage(0x20, sprite.pack());
         }
 
       }
@@ -105,7 +104,7 @@ class MainAppState extends State<MainApp> with SimpleFrameAppState {
   @override
   Future<void> cancel() async {
     // remove the displayed image
-    await frame!.sendMessage(TxCode(msgCode: 0x10, value: 1));
+    await frame!.sendMessage(0x10, TxCode(value: 1).pack());
     _image = null;
 
     currentState = ApplicationState.ready;
